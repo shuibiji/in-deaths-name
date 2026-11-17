@@ -53,6 +53,18 @@ codex plugin marketplace add shuibiji/in-deaths-name
 
 CLI 与桌面端须使用同一用户的 Codex 配置。已经注册过该市场时，直接进入桌面端插件页即可，无需打开本项目目录或手动拉取源码。
 
+## 立即加载规则
+
+Claude Code 中调用：
+
+```text
+/in-deaths-name:reload-rules
+```
+
+Codex CLI 中调用 `$reload-rules`；Codex Desktop 在技能选择器中选择“立即加载规则”。也可直接发送“立即加载以死之名规则”。
+
+手动加载立即生效，无需等待压缩次数。即使 `compactInterval` 设为 `0`，仍可手动加载。明确的加载命令由 `UserPromptSubmit` Hook 将两份规则全文直接加入模型上下文。
+
 ## 配置
 
 ### 快速设置

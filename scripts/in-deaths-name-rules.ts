@@ -8,6 +8,7 @@ interface HookInput {
   hook_event_name?: unknown;
   session_id?: unknown;
   source?: unknown;
+  prompt?: unknown;
 }
 
 interface InjectionSchedule {
@@ -18,7 +19,7 @@ interface InjectionSchedule {
 
 interface HookOutput {
   hookSpecificOutput?: {
-    hookEventName: 'SessionStart';
+    hookEventName: 'SessionStart' | 'UserPromptSubmit';
     additionalContext: string;
   };
   systemMessage?: string;
@@ -99,12 +100,24 @@ function createInjectionSchedule(
   };
 }
 
-/** 处理会话启动或压缩后的通知，输出要加入模型上下文的规则。 */
+/** 判断用户是否明确调用了手动加载入口。 */
+function isManualReload(prompt: unknown): boolean {
+  if (typeof prompt !== 'string') {
+    return false;
+  }
+  const text = prompt.trim();
+  return text === '立即加载以死之名规则'
+    || /^(?:\/in-deaths-name:reload-rules|\$reload-rules)(?:\s|$)/.test(text);
+}
+
+/** 处理会话通知或手动加载请求，输出要加入模型上下文的规则。 */
 function main(): void {
   const input = JSON.parse(readFileSync(0, 'utf8')) as HookInput;
-  if (input.hook_event_name !== 'SessionStart') {
+  const manualReload = input.hook_event_name === 'UserPromptSubmit' && isManualReload(input.prompt);
+  if (input.hook_event_name !== 'SessionStart' && !manualReload) {
     return;
   }
+  const hookEventName = manualReload ? 'UserPromptSubmit' : 'SessionStart';
 
   const errors: string[] = [];
   let interval = DEFAULT_COMPACT_INTERVAL;
@@ -117,6 +130,9 @@ function main(): void {
   let schedule: InjectionSchedule | undefined;
   try {
     schedule = createInjectionSchedule(input.session_id, input.source, interval);
+    if (manualReload) {
+      schedule.shouldInject = true;
+    }
   } catch (error) {
     errors.push(`读取压缩次数失败，本次直接加载规则。原因：${getErrorMessage(error)}`);
   }
@@ -136,7 +152,7 @@ function main(): void {
     loadedAll = sections.length === RULE_FILES.length;
     if (sections.length > 0) {
       output.hookSpecificOutput = {
-        hookEventName: 'SessionStart',
+        hookEventName,
         additionalContext: CONTEXT_REMINDER + sections.join('\n\n'),
       };
     }
