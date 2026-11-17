@@ -1,0 +1,6 @@
+{
+  "name": "in-deaths-name",
+  "version": "0.1.0",
+  "description": "首次会话启动加载规则全文，之后按可配置的上下文压缩次数重新加载。",
+  "license": "MIT"
+}

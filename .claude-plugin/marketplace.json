@@ -1,0 +1,13 @@
+{
+  "name": "shuibiji",
+  "owner": {
+    "name": "shuibiji"
+  },
+  "plugins": [
+    {
+      "name": "in-deaths-name",
+      "source": "./",
+      "description": "首次会话启动加载规则全文，之后按设置的上下文压缩次数重新加载。"
+    }
+  ]
+}

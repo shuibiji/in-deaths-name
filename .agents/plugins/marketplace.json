@@ -1,0 +1,20 @@
+{
+  "name": "shuibiji",
+  "interface": {
+    "displayName": "shuibiji"
+  },
+  "plugins": [
+    {
+      "name": "in-deaths-name",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
