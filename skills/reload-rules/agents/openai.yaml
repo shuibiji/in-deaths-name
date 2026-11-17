@@ -1,6 +1,6 @@
 interface:
-  display_name: "立即加载规则"
-  short_description: "立即读取并加载行为规则和回答规则的完整原文"
-  default_prompt: "立即加载以死之名规则"
+  display_name: "Reload rules / 立即加载规则"
+  short_description: "Load the complete behavior and answer rules now"
+  default_prompt: "Load the in-deaths-name rules now"
 policy:
   allow_implicit_invocation: false

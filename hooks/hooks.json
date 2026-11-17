@@ -5,7 +5,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/in-deaths-name-rules.ts\""
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/run-bun.cmd\" \"${CLAUDE_PLUGIN_ROOT}/scripts/in-deaths-name-rules.ts\" --client claude",
+            "timeout": 300
           }
         ]
       }
@@ -15,7 +16,19 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/in-deaths-name-rules.ts\""
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/run-bun.cmd\" \"${CLAUDE_PLUGIN_ROOT}/scripts/in-deaths-name-rules.ts\" --client claude",
+            "timeout": 300
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/run-bun.cmd\" \"${CLAUDE_PLUGIN_ROOT}/scripts/in-deaths-name-rules.ts\" --client claude",
+            "timeout": 300
           }
         ]
       }

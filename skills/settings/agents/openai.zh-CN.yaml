@@ -1,0 +1,5 @@
+interface:
+  display_name: "规则加载设置"
+  short_description: "查看或设置规则语言和上下文压缩后的重载间隔"
+policy:
+  allow_implicit_invocation: false

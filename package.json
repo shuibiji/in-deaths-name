@@ -1,0 +1,52 @@
+{
+  "name": "in-deaths-name",
+  "version": "1.1.0",
+  "description": "Load complete rules at session start and reload after a configurable number of context compactions. English by default; Chinese optional.",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shuibiji/in-deaths-name.git"
+  },
+  "engines": {
+    "bun": ">=1.1.0"
+  },
+  "keywords": [
+    "pi-package"
+  ],
+  "pi": {
+    "extensions": [
+      "./extensions/in-deaths-name.ts"
+    ],
+    "skills": [
+      "./skills"
+    ]
+  },
+  "omp": {
+    "extensions": [
+      "./extensions/oh-my-pi.ts"
+    ]
+  },
+  "files": [
+    "extensions",
+    "scripts",
+    "skills",
+    "rules",
+    "hooks",
+    ".claude-plugin",
+    ".codex-plugin",
+    ".agents",
+    "config.json",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "typecheck": "bun ./node_modules/typescript/bin/tsc --noEmit",
+    "postinstall": "\"./scripts/run-bun.cmd\" --version"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "typescript": "5.9.3"
+  }
+}

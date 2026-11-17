@@ -7,7 +7,7 @@
     {
       "name": "in-deaths-name",
       "source": "./",
-      "description": "首次会话启动加载规则全文，之后按设置的上下文压缩次数重新加载。"
+      "description": "Load complete rules at session start and after a configurable number of context compactions. English by default; Chinese optional."
     }
   ]
 }

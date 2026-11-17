@@ -1,6 +1,6 @@
 {
   "name": "in-deaths-name",
-  "version": "1.0.0",
-  "description": "首次会话启动加载规则全文，之后按可配置的上下文压缩次数重新加载。",
+  "version": "1.1.0",
+  "description": "Load complete rules at session start and reload after a configurable number of context compactions. English by default; Chinese optional.",
   "license": "MIT"
 }
