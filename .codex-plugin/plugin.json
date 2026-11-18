@@ -1,6 +1,6 @@
 {
   "name": "in-deaths-name",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Load complete rules at session start and reload after a configurable number of context compactions. English by default; Chinese optional.",
   "hooks": "./hooks/codex-hooks.json",
   "license": "MIT"
