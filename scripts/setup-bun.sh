@@ -41,7 +41,7 @@ if (( $# )); then
   "$bun_path" -e '
 const fs = require("node:fs"), path = require("node:path");
 const [client, language, ...extra] = process.argv.slice(1);
-if (extra.length || !["claude", "codex", "pi", "omp"].includes(client) || !["en", "zh"].includes(language)) throw new Error("Provide a client (claude, codex, pi, omp) and a language (en, zh).");
+if (extra.length || !["claude", "codex", "pi", "omp", "dsh"].includes(client) || !["en", "zh"].includes(language)) throw new Error("Provide a client (claude, codex, pi, omp, dsh) and a language (en, zh).");
 const file = path.join(require("node:os").homedir(), ".config", "in-deaths-name", client, "config.json");
 const settings = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, "utf8")) : {};
 if (!settings || typeof settings !== "object" || Array.isArray(settings)) throw new Error("Settings must contain a JSON object.");

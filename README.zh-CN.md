@@ -14,8 +14,8 @@
 
 ## 前置条件
 
-- 已安装 Claude Code CLI、Claude Desktop（Code 页）、Codex CLI、Codex Desktop、Pi 或 oh-my-pi。
-- 插件脚本使用 **Bun 1.1.0 或更高版本**，自动检测并准备运行时。客户端自身的运行环境沿用各客户端要求。
+- 已安装 Claude Code CLI、Claude Desktop（Code 页）、Codex CLI、Codex Desktop、Pi、oh-my-pi 或 DeepSeek Harness。
+- 除 DeepSeek Harness 独立子包外，插件脚本使用 **Bun 1.1.0 或更高版本**，自动检测并准备运行时。客户端自身的运行环境沿用各客户端要求。
 - 客户端须支持下文使用的插件市场或原生扩展接口。
 
 由工具自动下载插件，无需手动克隆仓库、进入源码目录、编译或编写 Hook 配置。
@@ -122,6 +122,18 @@ omp plugin install in-deaths-name@shuibiji
 
 oh-my-pi 通过包中的 `omp.extensions` 加载原生扩展，使用下文的原生命令。清空上下文后会重新加载规则。
 
+### DeepSeek Harness
+
+在桌面端的「插件 → 添加插件」粘贴 `git+https://github.com/shuibiji/in-deaths-name.git#main&path:harness`，安装并启用。使用 CLI 时，把插件装入实际使用的 profile（以下以 `web` 为例）：
+
+```sh
+dsh plugin --profile web add "git+https://github.com/shuibiji/in-deaths-name.git#main&path:harness"
+```
+
+新建会话即可使用；若提示需要重启，先重启该 profile。插件将规则全文写入模型读取的会话历史，不额外发起模型请求。只有成功完成的上下文压缩才计数，失败或取消的压缩不计数。
+
+Harness 安装的是独立子包，无需 Bun、安装脚本或手动编译。如需安装前选中文，可用下文带 `dsh zh` 的命令。维护者修改版本、规则或适配器后，在仓库根目录运行 `bun run build:harness` 同步分发包。
+
 ## 安装语言（默认英文，可选中文）
 
 首次安装且没有已保存设置时，默认加载英文。两种语言使用同一套插件，选择语言只改变读取目录，不重新生成或翻译规则文件。
@@ -148,6 +160,7 @@ curl -fsSL https://raw.githubusercontent.com/shuibiji/in-deaths-name/main/script
 | Codex CLI、Codex Desktop | `codex` |
 | Pi | `pi` |
 | oh-my-pi | `omp` |
+| DeepSeek Harness | `dsh` |
 
 按表替换命令末尾的 `claude`，保留 `zh`，然后执行上面的对应客户端安装步骤。独立配置已提前选定中文，首次加载就会读取 `rules/zh/`。已有配置中的压缩间隔会保留；没有设置过时使用 `3`。首次选择英文可将 `zh` 换为 `en`，或在没有已保存配置时省略此步骤。
 
@@ -167,7 +180,7 @@ $settings zh
 
 Codex Desktop：在技能选择器中选择“Rule settings / 规则加载设置”，提供 `zh`。
 
-Pi、oh-my-pi：
+Pi、oh-my-pi、DeepSeek Harness：
 
 ```text
 /in-deaths-name-settings zh
@@ -189,7 +202,7 @@ Claude Code CLI、Claude Desktop 的 Code 页中调用：
 
 Codex CLI 中调用 `$reload-rules`；Codex Desktop 在技能选择器中选择“立即加载规则”。也可直接发送“立即加载以死之名规则”。
 
-Pi、oh-my-pi 中调用：
+Pi、oh-my-pi、DeepSeek Harness 中调用：
 
 ```text
 /in-deaths-name-reload
@@ -231,7 +244,7 @@ $settings 0
 2. 提供 `3` 或其他正整数：设置重载间隔。
 3. 提供 `0`：关闭压缩后的自动重载。
 
-#### Pi、oh-my-pi
+#### Pi、oh-my-pi、DeepSeek Harness
 
 ```text
 /in-deaths-name-settings
@@ -243,7 +256,7 @@ $settings 0
 
 ### 配置项
 
-配置保存在 `~/.config/in-deaths-name/<client>/config.json`，`<client>` 取安装语言表中的客户端参数。Claude CLI/Desktop 共用 `claude`，Codex CLI/Desktop 共用 `codex`；Pi 和 oh-my-pi 分别使用 `pi`、`omp`。默认内容为：
+配置保存在 `~/.config/in-deaths-name/<client>/config.json`，`<client>` 取安装语言表中的客户端参数。Claude CLI/Desktop 共用 `claude`，Codex CLI/Desktop 共用 `codex`；Pi 和 oh-my-pi 分别使用 `pi`、`omp`；DeepSeek Harness 使用 `dsh`。默认内容为：
 
 ```json
 {
@@ -269,7 +282,7 @@ $settings 0
 
 ### 更新
 
-先执行上文“Bun 自动准备”中对应平台的不带参数命令，再使用客户端的原生更新入口。达标的 Bun 保持原版本；缺失或过旧时自动安装最新稳定版。无需先卸载插件。常用终端命令如下：
+除 DeepSeek Harness 外，先执行上文“Bun 自动准备”中对应平台的不带参数命令，再使用客户端的原生更新入口。达标的 Bun 保持原版本；缺失或过旧时自动安装最新稳定版。无需先卸载插件。常用终端命令如下：
 
 ```sh
 # Claude Code CLI（同一用户配置下也供 Claude Desktop 使用）
@@ -286,6 +299,9 @@ pi update git:github.com/shuibiji/in-deaths-name
 # oh-my-pi
 omp plugin marketplace update shuibiji
 omp plugin upgrade in-deaths-name@shuibiji
+
+# DeepSeek Harness（web 配置）
+dsh plugin --profile web update in-deaths-name
 ```
 
 更新后，通过客户端的插件重载入口或重启客户端使新版本生效。Pi 使用 `/reload`；Claude Code 和 oh-my-pi 使用 `/reload-plugins`；桌面端按其提示重启或重载。
@@ -305,6 +321,7 @@ claude plugin uninstall in-deaths-name@shuibiji
 codex plugin remove in-deaths-name@shuibiji
 pi remove git:github.com/shuibiji/in-deaths-name
 omp plugin uninstall in-deaths-name@shuibiji
+dsh plugin --profile web remove in-deaths-name
 ```
 
 只执行对应客户端的那一条。桌面端也可使用插件管理页卸载，并按提示重启。Claude CLI/Desktop 共用同一客户端配置，Codex CLI/Desktop 同理。
@@ -329,6 +346,7 @@ bun -e "const p=require('node:path').join(require('node:os').homedir(),'.config'
 - [Claude Desktop 插件](https://code.claude.com/docs/en/desktop)
 - [Pi 包安装](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/packages.md) · [扩展接口](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/extensions.md)
 - [oh-my-pi 插件市场](https://github.com/can1357/oh-my-pi/blob/main/docs/marketplace.md) · [扩展加载](https://github.com/can1357/oh-my-pi/blob/main/docs/extension-loading.md)
+- [DeepSeek Harness](https://www.deepseek.com/en/harness/) · [插件安装与使用](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.zh.md)
 
 ## 许可证
 

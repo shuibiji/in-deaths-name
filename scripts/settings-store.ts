@@ -1,10 +1,10 @@
-/** 用户设置独立于安装缓存保存，升级时保留；四种客户端各自使用一份配置。 */
+/** 用户设置独立于安装缓存保存，升级时保留；各客户端分别使用一份配置。 */
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { basename, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-export type RuleClient = 'claude' | 'codex' | 'pi' | 'omp';
+export type RuleClient = 'claude' | 'codex' | 'pi' | 'omp' | 'dsh';
 export interface StoredSettings {
   language?: unknown;
   compactInterval?: unknown;
@@ -16,8 +16,8 @@ const PLUGIN_ROOT = fileURLToPath(new URL('../', import.meta.url));
 /** Hook 和原生扩展显式传入客户端；直接调用脚本时兼容已有 Claude/Codex 环境。 */
 export function resolveClient(value?: string): RuleClient {
   const client = value ?? (process.env.CODEX_THREAD_ID || process.env.PLUGIN_DATA ? 'codex' : 'claude');
-  if (client !== 'claude' && client !== 'codex' && client !== 'pi' && client !== 'omp') {
-    throw new Error('Client must be claude, codex, pi, or omp.');
+  if (client !== 'claude' && client !== 'codex' && client !== 'pi' && client !== 'omp' && client !== 'dsh') {
+    throw new Error('Client must be claude, codex, pi, omp, or dsh.');
   }
   return client;
 }

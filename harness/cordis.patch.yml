@@ -1,0 +1,3 @@
+- insert:
+    - id: in-deaths-name
+      name: ./lib/index.mjs

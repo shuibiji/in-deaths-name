@@ -14,8 +14,8 @@ Hooks or native client extensions place the complete text of both rule files int
 
 ## Prerequisites
 
-- Claude Code CLI, Claude Desktop (Code tab), Codex CLI, Codex Desktop, Pi, or oh-my-pi is installed.
-- Plugin scripts use **Bun 1.1.0 or later**, detected and prepared automatically. Each client retains its own runtime requirements.
+- Claude Code CLI, Claude Desktop (Code tab), Codex CLI, Codex Desktop, Pi, oh-my-pi, or DeepSeek Harness is installed.
+- Except for the standalone DeepSeek Harness bundle, plugin scripts use **Bun 1.1.0 or later**, detected and prepared automatically. Each client retains its own runtime requirements.
 - The client supports the plugin marketplace or native extension interfaces used below.
 
 The client downloads the plugin for you. There is no need to clone the repository manually, enter the source directory, compile anything, or write Hook configuration.
@@ -122,6 +122,18 @@ You can also install from within oh-my-pi:
 
 oh-my-pi loads the native extension through the package's `omp.extensions` entry. Use the native commands below. Clearing the context reloads the rules.
 
+### DeepSeek Harness
+
+In the desktop app, open **Plugins → Add plugin**, paste `git+https://github.com/shuibiji/in-deaths-name.git#main&path:harness`, then install and enable it. With the CLI, install into the profile you actually use (`web` in this example):
+
+```sh
+dsh plugin --profile web add "git+https://github.com/shuibiji/in-deaths-name.git#main&path:harness"
+```
+
+Start a session, restarting the profile first if prompted. The plugin adds the full rules to the session history used by the model without starting a model request. Only completed compactions count; failed or cancelled attempts do not.
+
+Harness installs a standalone bundle with no Bun requirement, install scripts, or user build step. To start in Chinese, use the `dsh zh` setup command below. Maintainers: after changing the version, rules, or adapter, run `bun run build:harness` at the repository root to refresh the distribution.
+
 ## Installation Language (English by Default, Chinese Optional)
 
 English is the default on a first installation with no saved settings. Both languages use the same plugin. Selecting a language changes the directory being read; it does not generate or translate rule files.
@@ -148,6 +160,7 @@ curl -fsSL https://raw.githubusercontent.com/shuibiji/in-deaths-name/main/script
 | Codex CLI and Codex Desktop | `codex` |
 | Pi | `pi` |
 | oh-my-pi | `omp` |
+| DeepSeek Harness | `dsh` |
 
 Replace the final `claude` argument according to the table, keep `zh`, then follow the installation steps for that client above. The independent configuration already selects Chinese, so the first load reads `rules/zh/`. Any saved reload interval is preserved; otherwise it defaults to `3`. To select English initially, replace `zh` with `en`, or omit this step when no configuration has been saved.
 
@@ -167,7 +180,7 @@ $settings zh
 
 Codex Desktop: select “Rule settings / 规则加载设置” in the skill picker and provide `zh`.
 
-Pi and oh-my-pi:
+Pi, oh-my-pi, and DeepSeek Harness:
 
 ```text
 /in-deaths-name-settings zh
@@ -189,7 +202,7 @@ In Claude Code CLI or the Code tab of Claude Desktop:
 
 In Codex CLI, use `$reload-rules`. In Codex Desktop, select “Reload rules / 立即加载规则” in the skill picker. You can also send “Load the in-deaths-name rules now”. The original Chinese trigger, “立即加载以死之名规则”, remains supported.
 
-In Pi or oh-my-pi:
+In Pi, oh-my-pi, or DeepSeek Harness:
 
 ```text
 /in-deaths-name-reload
@@ -231,7 +244,7 @@ Select “Rule settings / 规则加载设置” in the skill picker:
 2. Provide `3` or another positive integer to set the reload interval.
 3. Provide `0` to disable automatic reloading after compaction.
 
-#### Pi and oh-my-pi
+#### Pi, oh-my-pi, and DeepSeek Harness
 
 ```text
 /in-deaths-name-settings
@@ -243,7 +256,7 @@ The settings command changes only the current client's independent configuration
 
 ### Configuration Fields
 
-Settings are stored in `~/.config/in-deaths-name/<client>/config.json`, using the client argument from the installation-language table. Claude CLI/Desktop share `claude`; Codex CLI/Desktop share `codex`; Pi and oh-my-pi use `pi` and `omp` respectively. The defaults are:
+Settings are stored in `~/.config/in-deaths-name/<client>/config.json`, using the client argument from the installation-language table. Claude CLI/Desktop share `claude`; Codex CLI/Desktop share `codex`; Pi and oh-my-pi use `pi` and `omp` respectively; DeepSeek Harness uses `dsh`. The defaults are:
 
 ```json
 {
@@ -269,7 +282,7 @@ Settings are independent of the installation and survive updates and reinstalls.
 
 ### Update
 
-First run the command for your platform under “Automatic Bun Setup” above, without arguments, then use the client's native update mechanism. A compatible Bun version is kept unchanged; a missing or outdated Bun is replaced with the latest stable release. Keep the plugin installed during the update. Common terminal commands are:
+For clients other than DeepSeek Harness, first run the command for your platform under “Automatic Bun Setup” above, without arguments, then use the client's native update mechanism. A compatible Bun version is kept unchanged; a missing or outdated Bun is replaced with the latest stable release. Keep the plugin installed during the update. Common terminal commands are:
 
 ```sh
 # Claude Code CLI (also used by Claude Desktop under the same user configuration)
@@ -286,6 +299,9 @@ pi update git:github.com/shuibiji/in-deaths-name
 # oh-my-pi
 omp plugin marketplace update shuibiji
 omp plugin upgrade in-deaths-name@shuibiji
+
+# DeepSeek Harness (web profile)
+dsh plugin --profile web update in-deaths-name
 ```
 
 After updating, reload the plugin or restart the client to activate the new version. Pi uses `/reload`; Claude Code and oh-my-pi use `/reload-plugins`; follow the desktop app's restart or reload instructions.
@@ -305,6 +321,7 @@ claude plugin uninstall in-deaths-name@shuibiji
 codex plugin remove in-deaths-name@shuibiji
 pi remove git:github.com/shuibiji/in-deaths-name
 omp plugin uninstall in-deaths-name@shuibiji
+dsh plugin --profile web remove in-deaths-name
 ```
 
 Run only the command for your client. Desktop apps also support uninstalling through their plugin manager; restart when prompted. Claude CLI/Desktop share one client configuration, as do Codex CLI/Desktop.
@@ -330,6 +347,7 @@ This deletes the selected client's saved language, reload interval, and the plug
 - [Claude Desktop plugins](https://code.claude.com/docs/en/desktop)
 - [Pi package installation](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/packages.md) · [Extension API](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/extensions.md)
 - [oh-my-pi marketplace](https://github.com/can1357/oh-my-pi/blob/main/docs/marketplace.md) · [Extension loading](https://github.com/can1357/oh-my-pi/blob/main/docs/extension-loading.md)
+- [DeepSeek Harness](https://www.deepseek.com/en/harness/) · [Plugin installation](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md)
 
 ## License
 
