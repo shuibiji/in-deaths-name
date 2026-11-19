@@ -1,0 +1,5 @@
+{
+  "in-deaths-name": {
+    "PreInvocation": [{"type": "command", "command": "./runtime/scripts/run-bun.cmd ./runtime/lib/hook.mjs"}]
+  }
+}

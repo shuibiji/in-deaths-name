@@ -12,8 +12,8 @@ import { fileURLToPath } from "node:url";
 var PLUGIN_ROOT = fileURLToPath(new URL("../", import.meta.url));
 function resolveClient(value) {
   const client = value ?? (process.env.CODEX_THREAD_ID || process.env.PLUGIN_DATA ? "codex" : "claude");
-  if (client !== "claude" && client !== "codex" && client !== "pi" && client !== "omp" && client !== "dsh") {
-    throw new Error("Client must be claude, codex, pi, omp, or dsh.");
+  if (client !== "claude" && client !== "codex" && client !== "pi" && client !== "omp" && client !== "dsh" && client !== "agy") {
+    throw new Error("Client must be claude, codex, pi, omp, dsh, or agy.");
   }
   return client;
 }

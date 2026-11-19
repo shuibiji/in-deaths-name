@@ -4,7 +4,7 @@ import { homedir } from 'node:os';
 import { basename, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-export type RuleClient = 'claude' | 'codex' | 'pi' | 'omp' | 'dsh';
+export type RuleClient = 'claude' | 'codex' | 'pi' | 'omp' | 'dsh' | 'agy';
 export interface StoredSettings {
   language?: unknown;
   compactInterval?: unknown;
@@ -16,8 +16,8 @@ const PLUGIN_ROOT = fileURLToPath(new URL('../', import.meta.url));
 /** Hook 和原生扩展显式传入客户端；直接调用脚本时兼容已有 Claude/Codex 环境。 */
 export function resolveClient(value?: string): RuleClient {
   const client = value ?? (process.env.CODEX_THREAD_ID || process.env.PLUGIN_DATA ? 'codex' : 'claude');
-  if (client !== 'claude' && client !== 'codex' && client !== 'pi' && client !== 'omp' && client !== 'dsh') {
-    throw new Error('Client must be claude, codex, pi, omp, or dsh.');
+  if (client !== 'claude' && client !== 'codex' && client !== 'pi' && client !== 'omp' && client !== 'dsh' && client !== 'agy') {
+    throw new Error('Client must be claude, codex, pi, omp, dsh, or agy.');
   }
   return client;
 }

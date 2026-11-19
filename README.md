@@ -14,7 +14,7 @@ Hooks or native client extensions place the complete text of both rule files int
 
 ## Prerequisites
 
-- Claude Code CLI, Claude Desktop (Code tab), Codex CLI, Codex Desktop, Pi, oh-my-pi, or DeepSeek Harness is installed.
+- Claude Code CLI, Claude Desktop (Code tab), Codex CLI, Codex Desktop, Pi, oh-my-pi, DeepSeek Harness, or Google Antigravity CLI is installed.
 - Except for the standalone DeepSeek Harness bundle, plugin scripts use **Bun 1.1.0 or later**, detected and prepared automatically. Each client retains its own runtime requirements.
 - The client supports the plugin marketplace or native extension interfaces used below.
 
@@ -134,6 +134,14 @@ Start a session, restarting the profile first if prompted. The plugin adds the f
 
 Harness installs a standalone bundle with no Bun requirement, install scripts, or user build step. To start in Chinese, use the `dsh zh` setup command below. Maintainers: after changing the version, rules, or adapter, run `bun run build:harness` at the repository root to refresh the distribution.
 
+### Google Antigravity CLI (`agy`)
+
+```sh
+agy plugin install https://github.com/shuibiji/in-deaths-name/tree/main/agy
+```
+
+Start a new `agy` session after installation. A native `PreInvocation` hook supplies both complete rule files to the model. It counts new `CHECKPOINT` records marked `DONE` in the current conversation, not invocations or tool calls. After the configured number of compactions, the next invocation receives the rules again. For the first load in Chinese, use `agy zh` in the setup example below. Maintainers: run `bun run build:agy` after editing the version, rules, or adapter.
+
 ## Installation Language (English by Default, Chinese Optional)
 
 English is the default on a first installation with no saved settings. Both languages use the same plugin. Selecting a language changes the directory being read; it does not generate or translate rule files.
@@ -161,6 +169,7 @@ curl -fsSL https://raw.githubusercontent.com/shuibiji/in-deaths-name/main/script
 | Pi | `pi` |
 | oh-my-pi | `omp` |
 | DeepSeek Harness | `dsh` |
+| Google Antigravity CLI | `agy` |
 
 Replace the final `claude` argument according to the table, keep `zh`, then follow the installation steps for that client above. The independent configuration already selects Chinese, so the first load reads `rules/zh/`. Any saved reload interval is preserved; otherwise it defaults to `3`. To select English initially, replace `zh` with `en`, or omit this step when no configuration has been saved.
 
@@ -180,7 +189,7 @@ $settings zh
 
 Codex Desktop: select “Rule settings / 规则加载设置” in the skill picker and provide `zh`.
 
-Pi, oh-my-pi, and DeepSeek Harness:
+Pi, oh-my-pi, DeepSeek Harness, and agy:
 
 ```text
 /in-deaths-name-settings zh
@@ -202,7 +211,7 @@ In Claude Code CLI or the Code tab of Claude Desktop:
 
 In Codex CLI, use `$reload-rules`. In Codex Desktop, select “Reload rules / 立即加载规则” in the skill picker. You can also send “Load the in-deaths-name rules now”. The original Chinese trigger, “立即加载以死之名规则”, remains supported.
 
-In Pi, oh-my-pi, or DeepSeek Harness:
+In Pi, oh-my-pi, DeepSeek Harness, or agy:
 
 ```text
 /in-deaths-name-reload
@@ -244,7 +253,7 @@ Select “Rule settings / 规则加载设置” in the skill picker:
 2. Provide `3` or another positive integer to set the reload interval.
 3. Provide `0` to disable automatic reloading after compaction.
 
-#### Pi, oh-my-pi, and DeepSeek Harness
+#### Pi, oh-my-pi, DeepSeek Harness, and agy
 
 ```text
 /in-deaths-name-settings
@@ -256,7 +265,7 @@ The settings command changes only the current client's independent configuration
 
 ### Configuration Fields
 
-Settings are stored in `~/.config/in-deaths-name/<client>/config.json`, using the client argument from the installation-language table. Claude CLI/Desktop share `claude`; Codex CLI/Desktop share `codex`; Pi and oh-my-pi use `pi` and `omp` respectively; DeepSeek Harness uses `dsh`. The defaults are:
+Settings are stored in `~/.config/in-deaths-name/<client>/config.json`, using the client argument from the installation-language table. Claude CLI/Desktop share `claude`; Codex CLI/Desktop share `codex`; Pi and oh-my-pi use `pi` and `omp` respectively; DeepSeek Harness uses `dsh`; Antigravity CLI uses `agy`. The defaults are:
 
 ```json
 {
@@ -302,6 +311,9 @@ omp plugin upgrade in-deaths-name@shuibiji
 
 # DeepSeek Harness (web profile)
 dsh plugin --profile web update in-deaths-name
+
+# Google Antigravity CLI
+agy plugin install https://github.com/shuibiji/in-deaths-name/tree/main/agy
 ```
 
 After updating, reload the plugin or restart the client to activate the new version. Pi uses `/reload`; Claude Code and oh-my-pi use `/reload-plugins`; follow the desktop app's restart or reload instructions.
@@ -322,6 +334,7 @@ codex plugin remove in-deaths-name@shuibiji
 pi remove git:github.com/shuibiji/in-deaths-name
 omp plugin uninstall in-deaths-name@shuibiji
 dsh plugin --profile web remove in-deaths-name
+agy plugin uninstall in-deaths-name
 ```
 
 Run only the command for your client. Desktop apps also support uninstalling through their plugin manager; restart when prompted. Claude CLI/Desktop share one client configuration, as do Codex CLI/Desktop.
